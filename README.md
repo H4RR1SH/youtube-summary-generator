@@ -8,11 +8,12 @@ A tool that takes any YouTube video URL and generates a structured summary using
 - Automatically fetches the video transcript
 - Falls back to non-English languages if English is unavailable
 - Generates a structured summary: Overview, Key Points, and Conclusion
-- Saves each summary as a `.txt` file named after the video
+- Clean web UI to enter a URL and view the summary in the browser
 
 ## Tech Stack
 
 - **Python**
+- **[FastAPI](https://fastapi.tiangolo.com)** — web framework
 - **[youtube-transcript-api](https://github.com/jdepoix/youtube-transcript-api)** — fetches video transcripts
 - **[Ollama](https://ollama.com)** (local AI) — generates the summary
 - **Model:** `llama3.2`
@@ -21,10 +22,16 @@ A tool that takes any YouTube video URL and generates a structured summary using
 
 ```
 youtube-summary-generator/
-+-- transcript.py       # Fetches video ID, title, and transcript from YouTube
-+-- summarizer.py       # Sends transcript to Ollama and returns a structured summary
-+-- main.py             # Entry point - orchestrates the full flow
-+-- summaries/          # Output folder where generated summaries are saved
++-- backend/
+|   +-- api.py          # FastAPI server and API routes
+|   +-- transcript.py   # Fetches video ID, title, and transcript from YouTube
+|   +-- summarizer.py   # Sends transcript to Ollama and returns a structured summary
+|   +-- main.py         # CLI entry point (Phase 1)
++-- frontend/
+|   +-- index.html      # Web UI
+|   +-- style.css       # Styling
+|   +-- script.js       # Frontend logic
++-- summaries/          # Output folder for CLI-generated summaries
 +-- requirements.txt
 ```
 
@@ -43,15 +50,22 @@ source .venv/bin/activate # macOS/Linux
 uv pip install -r requirements.txt
 ```
 
-**Run:**
+**Run the web app:**
 ```bash
-python main.py
+cd backend
+uvicorn api:app --reload
 ```
 
-You will be prompted to enter a YouTube URL. The summary will be printed to the terminal and saved to the `summaries/` folder.
+Then open `http://localhost:8000` in your browser.
+
+**Or run the CLI:**
+```bash
+cd backend
+python main.py
+```
 
 ## Roadmap
 
 - [x] **Phase 1 - Local CLI:** Core logic with Ollama, summaries saved as `.txt` files
-- [ ] **Phase 2 - Local Frontend:** Web UI to enter a URL and view the summary in the browser
+- [x] **Phase 2 - Local Frontend:** Web UI to enter a URL and view the summary in the browser
 - [ ] **Phase 3 - Production:** Hosted on Vercel with a cloud AI provider
