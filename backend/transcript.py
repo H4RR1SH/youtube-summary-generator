@@ -1,7 +1,11 @@
 import re
+import os
 import html
 import requests
-from youtube_transcript_api import YouTubeTranscriptApi, NoTranscriptFound, TranscriptsDisabled
+from supadata import Supadata
+from dotenv import load_dotenv, find_dotenv
+
+load_dotenv(find_dotenv())
 
 
 # --- Exceptions ---
@@ -54,41 +58,28 @@ def fetch_video_title(video_id: str) -> str:
         return video_id
 
     title = html.unescape(match.group(1))
-    # Remove characters that are not safe in filenames
     return re.sub(r'[\\/:*?"<>|]', '', title).strip()[:200]
 
 
 # --- Transcript fetching ---
 
 def get_transcript(video_id: str) -> tuple[str, str]:
-    """
-    Fetch transcript and return (plain_text, language_name).
-    Tries English first, then auto-picks the first available language.
-    """
+    """Fetch transcript via Supadata and return (plain_text, language)."""
+    api_key = os.environ.get("SUPADATA_API_KEY")
+    if not api_key:
+        raise NoTranscriptError("SUPADATA_API_KEY is not set.")
+
+    client = Supadata(api_key=api_key)
+
     try:
-        transcript_list = YouTubeTranscriptApi().list(video_id)
-    except TranscriptsDisabled:
-        raise NoTranscriptError("Transcripts are disabled for this video.")
+        result = client.transcript(
+            url=f"https://www.youtube.com/watch?v={video_id}",
+            text=True,
+        )
     except Exception as e:
-        raise NoTranscriptError(f"Could not retrieve transcripts: {e}")
+        raise NoTranscriptError(f"Could not retrieve transcript: {e}")
 
-    try:
-        transcript = transcript_list.find_transcript(['en'])
-        segments = transcript.fetch()
-        return _segments_to_text(segments), transcript.language
-    except NoTranscriptFound:
-        pass
+    if not result.content:
+        raise NoTranscriptError("No transcript available for this video.")
 
-    # Fall back to the first available language
-    available = list(transcript_list)
-    if not available:
-        raise NoTranscriptError("No transcripts available for this video.")
-
-    transcript = available[0]
-    segments = transcript.fetch()
-    return _segments_to_text(segments), transcript.language
-
-
-def _segments_to_text(segments) -> str:
-    """Join transcript segments into a single plain-text string."""
-    return " ".join(seg.text.replace("\n", " ").strip() for seg in segments if seg.text.strip())
+    return result.content, result.lang
