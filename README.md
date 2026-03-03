@@ -15,8 +15,8 @@ A tool that takes any YouTube video URL and generates a structured summary using
 - **Python**
 - **[FastAPI](https://fastapi.tiangolo.com)** — web framework
 - **[youtube-transcript-api](https://github.com/jdepoix/youtube-transcript-api)** — fetches video transcripts
-- **[Ollama](https://ollama.com)** (local AI) — generates the summary
-- **Model:** `llama3.2`
+- **[Groq](https://groq.com)** — AI inference (model: `llama-3.3-70b-versatile`)
+- **[Render](https://render.com)** — hosting
 
 ## Project Structure
 
@@ -25,22 +25,22 @@ youtube-summary-generator/
 +-- backend/
 |   +-- api.py          # FastAPI server and API routes
 |   +-- transcript.py   # Fetches video ID, title, and transcript from YouTube
-|   +-- summarizer.py   # Sends transcript to Ollama and returns a structured summary
+|   +-- summarizer.py   # Sends transcript to Groq and returns a structured summary
 |   +-- main.py         # CLI entry point (Phase 1)
 +-- frontend/
 |   +-- index.html      # Web UI
 |   +-- style.css       # Styling
 |   +-- script.js       # Frontend logic
 +-- summaries/          # Output folder for CLI-generated summaries
++-- render.yaml         # Render deployment config
 +-- requirements.txt
 ```
 
-## Setup
+## Local Setup
 
 **Prerequisites:**
 - Python 3.10+
-- [Ollama](https://ollama.com) installed and running
-- `llama3.2` model pulled (`ollama pull llama3.2`)
+- A [Groq API key](https://console.groq.com) (free)
 
 **Install dependencies:**
 ```bash
@@ -48,6 +48,11 @@ uv venv
 .venv\Scripts\activate    # Windows
 source .venv/bin/activate # macOS/Linux
 uv pip install -r requirements.txt
+```
+
+**Add your API key** — create a `.env` file in the project root:
+```
+GROQ_API_KEY=your_key_here
 ```
 
 **Run the web app:**
@@ -68,4 +73,4 @@ python main.py
 
 - [x] **Phase 1 - Local CLI:** Core logic with Ollama, summaries saved as `.txt` files
 - [x] **Phase 2 - Local Frontend:** Web UI to enter a URL and view the summary in the browser
-- [ ] **Phase 3 - Production:** Hosted on Vercel with a cloud AI provider
+- [x] **Phase 3 - Production:** Hosted on Render with Groq AI
