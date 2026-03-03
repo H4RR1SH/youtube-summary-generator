@@ -1,0 +1,1 @@
+A simple YouTube transcript application that takes a YouTube link as input and outputs the transcript as the output.
