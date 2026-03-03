@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>YouTube Summary Generator</title>
+  <link rel="stylesheet" href="/static/style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>YouTube Summary Generator</h1>
+    <p class="subtitle">Paste any YouTube URL and get an AI-generated summary.</p>
+
+    <div class="input-row">
+      <input id="urlInput" type="text" placeholder="https://www.youtube.com/watch?v=..." />
+      <button id="submitBtn" onclick="generateSummary()">Summarize</button>
+    </div>
+
+    <div class="loader" id="loader">
+      <div class="spinner"></div>
+      <p>Generating summary — this may take a moment...</p>
+    </div>
+
+    <div class="error" id="error"></div>
+
+    <div class="result" id="result">
+      <div class="result-title" id="videoTitle"></div>
+      <div class="summary" id="summaryContent"></div>
+    </div>
+  </div>
+
+  <script src="/static/script.js"></script>
+</body>
+</html>

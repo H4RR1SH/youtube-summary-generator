@@ -63,7 +63,7 @@ def fetch_video_title(video_id: str) -> str:
 def get_transcript(video_id: str) -> tuple[str, str]:
     """
     Fetch transcript and return (plain_text, language_name).
-    Tries English first, then lets the user pick from available languages.
+    Tries English first, then auto-picks the first available language.
     """
     try:
         transcript_list = YouTubeTranscriptApi().list(video_id)
@@ -72,7 +72,6 @@ def get_transcript(video_id: str) -> tuple[str, str]:
     except Exception as e:
         raise NoTranscriptError(f"Could not retrieve transcripts: {e}")
 
-    # Try English first
     try:
         transcript = transcript_list.find_transcript(['en'])
         segments = transcript.fetch()
@@ -80,27 +79,14 @@ def get_transcript(video_id: str) -> tuple[str, str]:
     except NoTranscriptFound:
         pass
 
-    # Fall back: list available languages and ask the user to pick
+    # Fall back to the first available language
     available = list(transcript_list)
     if not available:
         raise NoTranscriptError("No transcripts available for this video.")
 
-    print("\nNo English transcript found. Available languages:\n")
-    for i, t in enumerate(available, start=1):
-        tag = " [auto-generated]" if t.is_generated else ""
-        print(f"  {i}. {t.language} ({t.language_code}){tag}")
-
-    while True:
-        raw = input("\nEnter the number of your chosen language: ").strip()
-        try:
-            choice = int(raw)
-            if 1 <= choice <= len(available):
-                chosen = available[choice - 1]
-                segments = chosen.fetch()
-                return _segments_to_text(segments), chosen.language
-            print(f"Please enter a number between 1 and {len(available)}.")
-        except ValueError:
-            print("Invalid input. Please enter a number.")
+    transcript = available[0]
+    segments = transcript.fetch()
+    return _segments_to_text(segments), transcript.language
 
 
 def _segments_to_text(segments) -> str:

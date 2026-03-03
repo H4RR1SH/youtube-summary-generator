@@ -2,4 +2,5 @@ summaries/
 __pycache__/
 *.pyc
 venv/
+.venv/
 .env
