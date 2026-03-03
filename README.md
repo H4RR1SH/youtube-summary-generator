@@ -2,6 +2,8 @@
 
 A tool that takes any YouTube video URL and generates a structured summary using AI — no manual watching required.
 
+**Live demo:** https://utubrief.onrender.com
+
 ## Features
 
 - Works with any YouTube video (long-form or Shorts)
@@ -14,7 +16,7 @@ A tool that takes any YouTube video URL and generates a structured summary using
 
 - **Python**
 - **[FastAPI](https://fastapi.tiangolo.com)** — web framework
-- **[youtube-transcript-api](https://github.com/jdepoix/youtube-transcript-api)** — fetches video transcripts
+- **[Supadata](https://supadata.ai)** — fetches video transcripts (cloud-safe)
 - **[Groq](https://groq.com)** — AI inference (model: `llama-3.3-70b-versatile`)
 - **[Render](https://render.com)** — hosting
 
@@ -50,9 +52,10 @@ source .venv/bin/activate # macOS/Linux
 uv pip install -r requirements.txt
 ```
 
-**Add your API key** — create a `.env` file in the project root:
+**Add your API keys** — create a `.env` file in the project root:
 ```
-GROQ_API_KEY=your_key_here
+GROQ_API_KEY=your_groq_key_here
+SUPADATA_API_KEY=your_supadata_key_here
 ```
 
 **Run the web app:**
