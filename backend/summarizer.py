@@ -26,7 +26,10 @@ A 2-3 sentence paragraph covering what the video is about.
 ## Conclusion
 1-2 sentences on the main takeaway.
 
-Be concise and accurate. Do not include information not present in the transcript.\
+Rules:
+- Be concise and accurate. Do not include information not present in the transcript.
+- Transcripts are auto-generated and may have recognition errors. When you encounter a word that looks like a garbled version of a well-known proper noun, brand name, or technical term (e.g. "AMA" when context clearly means "Ollama"), use your knowledge to restore the correct spelling.
+- Preserve all proper nouns, product names, and technical terms accurately.\
 """
 
 

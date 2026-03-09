@@ -43,22 +43,21 @@ _HEADERS = {
 }
 
 def fetch_video_title(video_id: str) -> str:
-    """Scrape the video title from the YouTube watch page."""
+    """Fetch the video title via the YouTube oEmbed API."""
     try:
-        response = requests.get(f'https://www.youtube.com/watch?v={video_id}', headers=_HEADERS, timeout=10)
+        response = requests.get(
+            'https://www.youtube.com/oembed',
+            params={'url': f'https://www.youtube.com/watch?v={video_id}', 'format': 'json'},
+            headers=_HEADERS,
+            timeout=10,
+        )
         response.raise_for_status()
-    except requests.RequestException:
-        return video_id
-
-    match = re.search(r'<title>(.+?) - YouTube</title>', response.text)
-    if not match:
-        match = re.search(r'"og:title" content="(.+?)"', response.text)
-
-    if not match:
-        return video_id
-
-    title = html.unescape(match.group(1))
-    return re.sub(r'[\\/:*?"<>|]', '', title).strip()[:200]
+        title = response.json().get('title', '')
+        if title:
+            return re.sub(r'[\\/:*?"<>|]', '', html.unescape(title)).strip()[:200]
+    except Exception:
+        pass
+    return video_id
 
 
 # --- Transcript fetching ---

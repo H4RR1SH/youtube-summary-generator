@@ -77,3 +77,9 @@ python main.py
 - [x] **Phase 1 - Local CLI:** Core logic with Ollama, summaries saved as `.txt` files
 - [x] **Phase 2 - Local Frontend:** Web UI to enter a URL and view the summary in the browser
 - [x] **Phase 3 - Production:** Hosted on Render with Groq AI
+
+## Changelog
+
+### 03-09-2026
+- **Fixed video title display:** Switched from scraping the YouTube watch page (blocked by server environments) to the YouTube oEmbed API, so the real video title now shows correctly.
+- **Improved summary accuracy:** Updated the AI prompt to handle auto-generated caption errors — the model now corrects garbled proper nouns and brand names using context.
